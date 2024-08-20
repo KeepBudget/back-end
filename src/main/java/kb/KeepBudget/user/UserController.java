@@ -55,4 +55,13 @@ public class UserController {
         String district = districtService.getDistrict(updatedUser.getWishDistrictId()).getName();
         return ResponseEntity.ok(ApiUtils.success(updatedUser.toUserResDto(district)));
     }
+
+    @PostMapping("/check/nickname")
+    public ResponseEntity<ApiResult<String>> checkNickname(@Valid @RequestBody NicknameReqDto reqDto){
+        boolean existsNickname = userService.existsByNickname(reqDto.getNickname());
+        if(existsNickname){
+            return ResponseEntity.ok(ApiUtils.error("Nickname is already taken", HttpStatus.CONFLICT));
+        }
+        return ResponseEntity.ok(ApiUtils.success("Nickname is available"));
+    }
 }
