@@ -9,7 +9,7 @@ import kb.KeepBudget.user.entity.User;
 import lombok.Getter;
 
 @Getter
-public class SignUpReqDto {
+public class UserReqDto {
 
     @NotBlank(message = "닉네임을 입력해주세요.")
     private String nickname;
