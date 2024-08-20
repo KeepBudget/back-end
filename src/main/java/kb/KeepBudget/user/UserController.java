@@ -1,8 +1,11 @@
 package kb.KeepBudget.user;
 
 import jakarta.validation.Valid;
+import kb.KeepBudget.district.entity.District;
 import kb.KeepBudget.district.service.DistrictService;
+import kb.KeepBudget.user.dto.req.NicknameReqDto;
 import kb.KeepBudget.user.dto.req.SignUpReqDto;
+import kb.KeepBudget.user.dto.res.UserResDto;
 import kb.KeepBudget.user.entity.User;
 import kb.KeepBudget.user.service.UserService;
 import kb.KeepBudget.utils.ApiUtils;
@@ -20,11 +23,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final DistrictService districtService;
 
     @PostMapping("/sign-up")
-    public ApiResult signUp(@Valid @RequestBody SignUpReqDto reqDto){
+    public ApiResult<User> signUp(@Valid @RequestBody SignUpReqDto reqDto){
         User savedUser = userService.signUp(reqDto);
         return ApiUtils.success(savedUser);
     }
+
+    @PostMapping("/login")
+    public ApiResult<UserResDto> login(@Valid @RequestBody NicknameReqDto reqDto){
+        User foundUser = userService.login(reqDto);
+        String district = districtService.getDistrict(foundUser.getWishDistrictId()).getName();
+        return ApiUtils.success(foundUser.toUserResDto(district));
+    }
+
 
 }

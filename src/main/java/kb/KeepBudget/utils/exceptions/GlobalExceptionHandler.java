@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @RestControllerAdvice
@@ -71,6 +72,16 @@ public class GlobalExceptionHandler {
     public ApiResult handleDistrictNotExistException(DistrictNotExistException e){
         log.error("DistrictNotExistException = {}", e.getMessage());
         return ApiUtils.error(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
+    /*
+    * DB에 해당 element가 없을 경우
+    * */
+    @ExceptionHandler(NoSuchElementException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ApiResult handleNoSuchElementException(NoSuchElementException e){
+        log.error("NoSuchElementException = {}", e.getMessage());
+        return ApiUtils.error(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
 

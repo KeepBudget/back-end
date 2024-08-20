@@ -3,6 +3,7 @@ package kb.KeepBudget.user.entity;
 import jakarta.persistence.*;
 import kb.KeepBudget.property.type.PropertyType;
 import kb.KeepBudget.property.type.TradeType;
+import kb.KeepBudget.user.dto.res.UserResDto;
 import lombok.*;
 
 @Entity
@@ -32,5 +33,17 @@ public class User {
     private Integer wishPropertyPrice;
 
     private Integer wishPropertySize;
+
+    public UserResDto toUserResDto(String district){
+        return UserResDto.builder()
+                .id(id)
+                .nickname(nickname)
+                .wishDistrict(district)
+                .wishPropertyType(wishPropertyType.getName())
+                .wishTradeType(wishTradeType.getName())
+                .wishPropertyPrice(wishPropertyPrice)
+                .wishPropertySize(wishPropertySize)
+                .build();
+    }
 
 }

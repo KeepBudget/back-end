@@ -1,5 +1,8 @@
 package kb.KeepBudget.property.type;
 
+import lombok.Getter;
+
+@Getter
 public enum PropertyType {
     APARTMENT("아파트"),
     MULTIPLEX_HOUSING("연립다세대"),

@@ -3,6 +3,7 @@ package kb.KeepBudget.district.service;
 import kb.KeepBudget.district.dto.DistrictResDto;
 import kb.KeepBudget.district.entity.District;
 import kb.KeepBudget.district.repository.DistrictRepository;
+import kb.KeepBudget.utils.exceptions.DistrictNotExistException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +17,10 @@ public class DistrictService {
 
     public List<District> getDistricts() {
         return districtRepository.findAllByOrderByNameAsc();
+    }
+
+    public District getDistrict(Integer districtId){
+        return districtRepository.findById(districtId)
+                .orElseThrow(DistrictNotExistException::new);
     }
 }
