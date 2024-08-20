@@ -4,12 +4,14 @@ import jakarta.validation.Valid;
 import kb.KeepBudget.district.service.DistrictService;
 import kb.KeepBudget.user.dto.req.NicknameReqDto;
 import kb.KeepBudget.user.dto.req.UserReqDto;
+import kb.KeepBudget.user.dto.req.WishDistrictReqDto;
 import kb.KeepBudget.user.dto.res.UserResDto;
 import kb.KeepBudget.user.entity.User;
 import kb.KeepBudget.user.service.UserService;
 import kb.KeepBudget.utils.ApiUtils;
 import kb.KeepBudget.utils.ApiUtils.ApiResult;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,5 +46,13 @@ public class UserController {
         return ResponseEntity.ok(ApiUtils.success(user.toUserResDto(district)));
     }
 
-
+    @PutMapping("/wish-district")
+    public ResponseEntity<ApiResult<UserResDto>> updateWishDistrict(
+            @RequestHeader("accessToken") String token,
+            @Valid @RequestBody WishDistrictReqDto reqDto
+    ){
+        User updatedUser = userService.updateWishDistrict(token, reqDto);
+        String district = districtService.getDistrict(updatedUser.getWishDistrictId()).getName();
+        return ResponseEntity.ok(ApiUtils.success(updatedUser.toUserResDto(district)));
+    }
 }
