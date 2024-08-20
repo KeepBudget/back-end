@@ -7,6 +7,7 @@ import kb.KeepBudget.user.entity.User;
 import kb.KeepBudget.user.repository.UserRepository;
 import kb.KeepBudget.utils.exceptions.DistrictNotExistException;
 import kb.KeepBudget.utils.exceptions.DuplicateNicknameException;
+import kb.KeepBudget.utils.jwt.JWTUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +19,9 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final DistrictRepository districtRepository;
+    private final JWTUtil jwtUtil;
 
-    public User signUp(UserReqDto reqDto) {
+    public String signUp(UserReqDto reqDto) {
         boolean existsNickname = existsByNickname(reqDto.getNickname());
         if(existsNickname){
             throw new DuplicateNicknameException();
@@ -29,16 +31,25 @@ public class UserService {
             throw new DistrictNotExistException();
         }
         User user = reqDto.toUser();
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        Long savedUserId = savedUser.getId();
+        return createToken(savedUserId);
+    }
+
+    public String login(NicknameReqDto reqDto) {
+        String nickname = reqDto.getNickname();
+        User foundUser = userRepository.findByNickname(nickname)
+                .orElseThrow(() -> new NoSuchElementException("해당 닉네임을 가진 사용자가 존재하지 않습니다."));
+        Long userId = foundUser.getId();
+        return createToken(userId);
     }
 
     public boolean existsByNickname(String nickname){
         return userRepository.existsByNickname(nickname);
     }
 
-    public User login(NicknameReqDto reqDto) {
-        String nickname = reqDto.getNickname();
-        return userRepository.findByNickname(nickname)
-                .orElseThrow(() -> new NoSuchElementException("해당 닉네임을 가진 사용자가 존재하지 않습니다."));
+    public String createToken(Long userId){
+        String userToken = jwtUtil.createJwt(userId, 1000 * 60 * 60L);
+        return "Bearer " + userToken;
     }
 }

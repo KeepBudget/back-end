@@ -10,10 +10,8 @@ import kb.KeepBudget.user.service.UserService;
 import kb.KeepBudget.utils.ApiUtils;
 import kb.KeepBudget.utils.ApiUtils.ApiResult;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
@@ -24,18 +22,19 @@ public class UserController {
     private final DistrictService districtService;
 
     @PostMapping("/sign-up")
-    public ApiResult<UserResDto> signUp(@Valid @RequestBody UserReqDto reqDto){
-        User savedUser = userService.signUp(reqDto);
-        String district = districtService.getDistrict(savedUser.getWishDistrictId()).getName();
-        return ApiUtils.success(savedUser.toUserResDto(district));
+    public ResponseEntity<ApiResult<String>> signUp(@Valid @RequestBody UserReqDto reqDto){
+        String userToken = userService.signUp(reqDto);
+        return ResponseEntity.created(null)
+                .header("accessToken", userToken)
+                .body(ApiUtils.success("회원가입 및 로그인 성공"));
     }
 
     @PostMapping("/login")
-    public ApiResult<UserResDto> login(@Valid @RequestBody NicknameReqDto reqDto){
-        User foundUser = userService.login(reqDto);
-        String district = districtService.getDistrict(foundUser.getWishDistrictId()).getName();
-        return ApiUtils.success(foundUser.toUserResDto(district));
+    public ResponseEntity<ApiResult<String>> login(@Valid @RequestBody NicknameReqDto reqDto){
+        String userToken = userService.login(reqDto);
+        return ResponseEntity.ok()
+                .header("accessToken", userToken)
+                .body(ApiUtils.success("로그인 성공"));
     }
-
 
 }
