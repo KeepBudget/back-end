@@ -29,10 +29,7 @@ public class UserService {
         if(existsNickname){
             throw new DuplicateNicknameException();
         }
-        boolean existsDistrict = districtRepository.existsById(reqDto.getWishDistrictId());
-        if(!existsDistrict){
-            throw new DistrictNotExistException();
-        }
+        checkDistrict(reqDto.getWishDistrictId());
         User user = reqDto.toUser();
         User savedUser = userRepository.save(user);
         Long savedUserId = savedUser.getId();
@@ -64,14 +61,23 @@ public class UserService {
     }
 
     public User updateWishDistrict(String token, WishDistrictReqDto reqDto) {
+        checkDistrict(reqDto.getWishDistrictId());
         User user = getUser(token);
         user.setWishDistrictId(reqDto.getWishDistrictId());
         return user;
     }
 
     public User updateUser(String token, UserReqDto reqDto) {
+        checkDistrict(reqDto.getWishDistrictId());
         User user = getUser(token);
         user.updateUser(reqDto);
         return user;
+    }
+
+    private void checkDistrict(Integer districtId){
+        boolean existsDistrict = districtRepository.existsById(districtId);
+        if(!existsDistrict){
+            throw new DistrictNotExistException();
+        }
     }
 }
