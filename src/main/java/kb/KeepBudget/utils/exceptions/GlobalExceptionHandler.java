@@ -1,5 +1,7 @@
 package kb.KeepBudget.utils.exceptions;
 
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.security.SignatureException;
 import kb.KeepBudget.utils.ApiUtils;
 import kb.KeepBudget.utils.ApiUtils.ApiResult;
 import lombok.extern.slf4j.Slf4j;
@@ -83,6 +85,28 @@ public class GlobalExceptionHandler {
         log.error("NoSuchElementException = {}", e.getMessage());
         return ApiUtils.error(e.getMessage(), HttpStatus.NOT_FOUND);
     }
+
+    /*
+    * Token 만료
+    * */
+    @ExceptionHandler(ExpiredJwtException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiResult handleExpiredJwtException(ExpiredJwtException e){
+        log.error("ExpiredJwtException = {}", e.getMessage());
+        return ApiUtils.error("Token has expired", HttpStatus.UNAUTHORIZED);
+    }
+
+    /*
+    * 잘못된 Token일 경우
+    * */
+    @ExceptionHandler(SignatureException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ApiResult handleSignatureException(SignatureException e){
+        log.error("JwtTokenExpiredException = {}", e.getMessage());
+        return ApiUtils.error("Invalidated JWT", HttpStatus.UNAUTHORIZED);
+    }
+
+
 
 
 

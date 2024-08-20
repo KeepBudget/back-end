@@ -52,4 +52,11 @@ public class UserService {
         String userToken = jwtUtil.createJwt(userId, 1000 * 60 * 60L);
         return "Bearer " + userToken;
     }
+
+    public User getUser(String token) {
+        String cleanedToken = token.replace("Bearer ", "");
+        Long userId = jwtUtil.getId(cleanedToken);
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("해당 요청에 해당하는 사용자가 존재하지 않습니다."));
+    }
 }

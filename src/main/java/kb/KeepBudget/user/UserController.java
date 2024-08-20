@@ -37,4 +37,12 @@ public class UserController {
                 .body(ApiUtils.success("로그인 성공"));
     }
 
+    @GetMapping("")
+    public ResponseEntity<ApiResult<UserResDto>> getUser(@RequestHeader("accessToken") String token){
+        User user = userService.getUser(token);
+        String district = districtService.getDistrict(user.getWishDistrictId()).getName();
+        return ResponseEntity.ok(ApiUtils.success(user.toUserResDto(district)));
+    }
+
+
 }

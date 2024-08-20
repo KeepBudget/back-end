@@ -12,8 +12,6 @@ import lombok.Getter;
 @Builder
 public class UserResDto {
 
-    private Long id;
-
     private String nickname;
 
     private String wishDistrict;

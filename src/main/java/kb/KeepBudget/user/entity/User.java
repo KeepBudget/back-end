@@ -36,7 +36,6 @@ public class User {
 
     public UserResDto toUserResDto(String district){
         return UserResDto.builder()
-                .id(id)
                 .nickname(nickname)
                 .wishDistrict(district)
                 .wishPropertyType(wishPropertyType.getName())
