@@ -26,9 +26,10 @@ public class UserController {
     private final DistrictService districtService;
 
     @PostMapping("/sign-up")
-    public ApiResult<User> signUp(@Valid @RequestBody SignUpReqDto reqDto){
+    public ApiResult<UserResDto> signUp(@Valid @RequestBody SignUpReqDto reqDto){
         User savedUser = userService.signUp(reqDto);
-        return ApiUtils.success(savedUser);
+        String district = districtService.getDistrict(savedUser.getWishDistrictId()).getName();
+        return ApiUtils.success(savedUser.toUserResDto(district));
     }
 
     @PostMapping("/login")
