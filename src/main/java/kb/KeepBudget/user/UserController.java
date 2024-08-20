@@ -64,4 +64,14 @@ public class UserController {
         }
         return ResponseEntity.ok(ApiUtils.success("Nickname is available"));
     }
+
+    @PutMapping("")
+    public ResponseEntity<ApiResult<UserResDto>> updateUser(
+            @RequestHeader("accessToken") String token,
+            @Valid @RequestBody UserReqDto reqDto
+    ){
+        User updatedUser = userService.updateUser(token, reqDto);
+        String district = districtService.getDistrict(updatedUser.getWishDistrictId()).getName();
+        return ResponseEntity.ok(ApiUtils.success(updatedUser.toUserResDto(district)));
+    }
 }

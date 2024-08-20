@@ -68,4 +68,10 @@ public class UserService {
         user.setWishDistrictId(reqDto.getWishDistrictId());
         return user;
     }
+
+    public User updateUser(String token, UserReqDto reqDto) {
+        User user = getUser(token);
+        user.updateUser(reqDto);
+        return user;
+    }
 }
