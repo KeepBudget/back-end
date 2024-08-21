@@ -1,5 +1,6 @@
 package kb.KeepBudget.property;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import kb.KeepBudget.property.dto.req.GetPropertiesReqDto;
 import kb.KeepBudget.property.dto.res.GetPropertiesResDto;
@@ -30,7 +31,7 @@ public class PropertyController {
             @RequestHeader("accessToken") String token,
             @RequestParam int page,
             @RequestParam int size,
-            GetPropertiesReqDto reqDto
+            @Valid GetPropertiesReqDto reqDto
     ){
         log.info("GetPropertiesReqDto = {}", reqDto);
         User user = userService.getUser(token);

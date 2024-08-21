@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -104,6 +105,17 @@ public class GlobalExceptionHandler {
     public ApiResult handleSignatureException(SignatureException e){
         log.error("JwtTokenExpiredException = {}", e.getMessage());
         return ApiUtils.error("Invalidated JWT", HttpStatus.UNAUTHORIZED);
+    }
+
+    /*
+    * request param 부족
+    * */
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiResult handleMissingServletRequestParameterException(MissingServletRequestParameterException e){
+        log.error("MissingServletRequestParameterException = {}", e.getMessage());
+        String name = e.getParameterName();
+        return ApiUtils.error(name + " is required", HttpStatus.BAD_REQUEST);
     }
 
 

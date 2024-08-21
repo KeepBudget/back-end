@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @AllArgsConstructor
@@ -42,6 +43,10 @@ public class PropertyService {
                 .limit(size)
                 .map(Property::toPropertyResDto)
                 .toList();
+
+        if(propertyResDtos.isEmpty()){
+            throw new NoSuchElementException("There are no properties that meet the conditions");
+        }
 
         PageNation pageNation = PageNation.builder()
                 .page(page)
