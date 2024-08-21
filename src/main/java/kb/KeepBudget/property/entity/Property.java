@@ -1,6 +1,7 @@
 package kb.KeepBudget.property.entity;
 
 import jakarta.persistence.*;
+import kb.KeepBudget.property.dto.res.PropertyResDto;
 import kb.KeepBudget.property.type.PropertyType;
 import kb.KeepBudget.property.type.TradeType;
 import lombok.*;
@@ -37,4 +38,15 @@ public class Property {
 
     @Enumerated(EnumType.STRING)
     private TradeType tradeType;
+
+    public PropertyResDto toPropertyResDto(){
+        return PropertyResDto.builder()
+                .id(id)
+                .address(address)
+                .buildingName(buildingName)
+                .floor(floor)
+                .price(price)
+                .size(size)
+                .build();
+    }
 }
