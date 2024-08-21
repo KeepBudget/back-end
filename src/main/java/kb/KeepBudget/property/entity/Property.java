@@ -9,7 +9,7 @@ import lombok.*;
 @Entity
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
 @ToString
 @Table(name = "properties")
