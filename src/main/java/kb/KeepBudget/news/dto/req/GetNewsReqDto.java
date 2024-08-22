@@ -2,7 +2,9 @@ package kb.KeepBudget.news.dto.req;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import kb.KeepBudget.news.type.Category;
+import kb.KeepBudget.news.type.SentimentStatus;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -22,5 +24,7 @@ public class GetNewsReqDto {
 
     @NotNull
     private Category category;
+
+    private SentimentStatus status;
 
 }

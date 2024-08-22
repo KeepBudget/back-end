@@ -4,9 +4,12 @@ import kb.KeepBudget.news.dto.req.GetNewsReqDto;
 import kb.KeepBudget.news.dto.res.GetNewsResDto;
 import kb.KeepBudget.news.entity.News;
 import kb.KeepBudget.news.entity.NewsDistrict;
+import kb.KeepBudget.news.entity.NewsSentiment;
 import kb.KeepBudget.news.repository.NewsDistrictRepository;
 import kb.KeepBudget.news.repository.NewsRepository;
+import kb.KeepBudget.news.repository.NewsSentimentRepository;
 import kb.KeepBudget.news.type.Category;
+import kb.KeepBudget.news.type.SentimentStatus;
 import kb.KeepBudget.user.entity.User;
 import kb.KeepBudget.utils.dto.PageNation;
 import lombok.AllArgsConstructor;
@@ -21,6 +24,7 @@ public class NewsService {
 
     private final NewsDistrictRepository newsDistrictRepository;
     private final NewsRepository newsRepository;
+    private final NewsSentimentRepository newsSentimentRepository;
 
     public GetNewsResDto getNewsList(User user, GetNewsReqDto reqDto) {
 
@@ -30,7 +34,7 @@ public class NewsService {
         Integer wishDistrictId = user.getWishDistrictId();
         Category category = reqDto.getCategory();
         List<NewsDistrict> newsDistricts = newsDistrictRepository.findAllByDistrictIdAndCategory(wishDistrictId, category);
-        List<Long> newsIds = newsDistricts.stream().map(NewsDistrict::getNewsId).toList();
+        List<Long> newsIds = getNewsIdsByCategory(newsDistricts, reqDto.getStatus());
         List<News> newsList = newsRepository.findByIdInOrderByDateDesc(newsIds).stream()
                 .skip((long)(page-1) * size)
                 .limit(size)
@@ -48,6 +52,24 @@ public class NewsService {
                 .pageNation(pageNation)
                 .news(newsList)
                 .build();
+    }
+
+    private List<Long> getNewsIdsByCategory(List<NewsDistrict> newsDistricts, SentimentStatus status){
+        List<Long> newsIds = newsDistricts.stream().map(NewsDistrict::getNewsId).toList();
+        if(status == null){
+            return newsIds;
+        }
+        List<NewsSentiment> newsSentiments = newsSentimentRepository.findAllByNewsIdIn(newsIds);
+        return newsSentiments.stream().filter(newsSentiment -> matchesSentiment(newsSentiment, status))
+                .map(NewsSentiment::getNewsId).toList();
+    }
+
+    private boolean matchesSentiment(NewsSentiment newsSentiment, SentimentStatus status){
+        return switch (status) {
+            case NEGATIVE -> newsSentiment.getNegative() > 0;
+            case NEUTRAL -> newsSentiment.getNeutral() > 0;
+            case POSITIVE -> newsSentiment.getPositive() > 0;
+        };
     }
 
 }

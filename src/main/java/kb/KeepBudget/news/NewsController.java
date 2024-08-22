@@ -1,10 +1,12 @@
 package kb.KeepBudget.news;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Null;
 import kb.KeepBudget.news.dto.req.GetNewsReqDto;
 import kb.KeepBudget.news.dto.res.GetNewsResDto;
 import kb.KeepBudget.news.service.NewsService;
 import kb.KeepBudget.news.type.Category;
+import kb.KeepBudget.news.type.SentimentStatus;
 import kb.KeepBudget.user.entity.User;
 import kb.KeepBudget.user.service.UserService;
 import kb.KeepBudget.utils.ApiUtils;
@@ -29,6 +31,7 @@ public class NewsController {
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam Category category,
+            @RequestParam(required = false) SentimentStatus status,
             @Valid GetNewsReqDto reqDto
     ){
         log.info("GetNewsReqDto = {}", reqDto);
