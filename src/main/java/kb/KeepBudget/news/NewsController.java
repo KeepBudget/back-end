@@ -1,10 +1,10 @@
 package kb.KeepBudget.news;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Null;
 import kb.KeepBudget.news.dto.req.GetNewsReqDto;
 import kb.KeepBudget.news.dto.res.GetNewsResDto;
 import kb.KeepBudget.news.dto.res.GetNewsSentimentResDto;
+import kb.KeepBudget.news.dto.res.NewsKeywordResDto;
 import kb.KeepBudget.news.service.NewsService;
 import kb.KeepBudget.news.type.Category;
 import kb.KeepBudget.news.type.SentimentStatus;
@@ -16,6 +16,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -48,6 +50,13 @@ public class NewsController {
         User user = userService.getUser(token);
         GetNewsSentimentResDto newsSentimentResDto = newsService.getNewsSentiment(user.getWishDistrictId());
         return ResponseEntity.ok(ApiUtils.success(newsSentimentResDto));
+    }
+
+    @GetMapping("/keywords")
+    public ResponseEntity<ApiResult<List<NewsKeywordResDto>>> getNewsKeywords(@RequestHeader("accessToken") String token){
+        User user = userService.getUser(token);
+        List<NewsKeywordResDto> newsKeywordResDtos = newsService.getNewsKeywords(user.getWishDistrictId());
+        return ResponseEntity.ok(ApiUtils.success(newsKeywordResDtos));
     }
 
 }

@@ -10,13 +10,13 @@ import lombok.*;
 @Getter
 @ToString
 @Table(name = "news_keywords")
-public class NewsKeywords {
+public class NewsKeyword {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long news_id;
+    private Long newsId;
 
     private String keyword;
 

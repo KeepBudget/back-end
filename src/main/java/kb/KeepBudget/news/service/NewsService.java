@@ -3,10 +3,13 @@ package kb.KeepBudget.news.service;
 import kb.KeepBudget.news.dto.req.GetNewsReqDto;
 import kb.KeepBudget.news.dto.res.GetNewsResDto;
 import kb.KeepBudget.news.dto.res.GetNewsSentimentResDto;
+import kb.KeepBudget.news.dto.res.NewsKeywordResDto;
 import kb.KeepBudget.news.entity.News;
 import kb.KeepBudget.news.entity.NewsDistrict;
+import kb.KeepBudget.news.entity.NewsKeyword;
 import kb.KeepBudget.news.entity.NewsSentiment;
 import kb.KeepBudget.news.repository.NewsDistrictRepository;
+import kb.KeepBudget.news.repository.NewsKeywordRepository;
 import kb.KeepBudget.news.repository.NewsRepository;
 import kb.KeepBudget.news.repository.NewsSentimentRepository;
 import kb.KeepBudget.news.type.Category;
@@ -16,8 +19,11 @@ import kb.KeepBudget.utils.dto.PageNation;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -26,6 +32,7 @@ public class NewsService {
     private final NewsDistrictRepository newsDistrictRepository;
     private final NewsRepository newsRepository;
     private final NewsSentimentRepository newsSentimentRepository;
+    private final NewsKeywordRepository newsKeywordRepository;
 
     public GetNewsResDto getNewsList(User user, GetNewsReqDto reqDto) {
 
@@ -85,5 +92,19 @@ public class NewsService {
                 .neutral(neutral)
                 .positive(positive)
                 .build();
+    }
+
+    public List<NewsKeywordResDto> getNewsKeywords(Integer districtId) {
+        List<NewsDistrict> newsDistricts = newsDistrictRepository.findAllByDistrictIdAndCategory(districtId, Category.ACCIDENT);
+        List<Long> newsIds = newsDistricts.stream().map(NewsDistrict::getNewsId).toList();
+        List<NewsKeyword> newsKeywords = newsKeywordRepository.findAllByNewsIdIn(newsIds);
+        Map<String, Integer> keywordCountMap =  newsKeywords.stream().collect(Collectors.groupingBy(
+                        NewsKeyword::getKeyword,
+                        Collectors.summingInt(NewsKeyword::getCount)
+                ));
+        return keywordCountMap.entrySet().stream()
+                .map(entry -> new NewsKeywordResDto(entry.getKey(), entry.getValue()))
+                .sorted((dto1, dto2) -> dto2.getCount().compareTo(dto1.getCount()))
+                .toList();
     }
 }
