@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Null;
 import kb.KeepBudget.news.dto.req.GetNewsReqDto;
 import kb.KeepBudget.news.dto.res.GetNewsResDto;
+import kb.KeepBudget.news.dto.res.GetNewsSentimentResDto;
 import kb.KeepBudget.news.service.NewsService;
 import kb.KeepBudget.news.type.Category;
 import kb.KeepBudget.news.type.SentimentStatus;
@@ -38,6 +39,15 @@ public class NewsController {
         User user = userService.getUser(token);
         GetNewsResDto getNewsResDto = newsService.getNewsList(user, reqDto);
         return ResponseEntity.ok(ApiUtils.success(getNewsResDto));
+    }
+
+    // request : 사용자 정보 받음 -> 희망 지역 추출
+    // response : 그 지역의 부동산 뉴스들의 감정분석 결과를 부정, 중립, 긍정 점수 return
+    @GetMapping("/sentiment")
+    public ResponseEntity<ApiResult<GetNewsSentimentResDto>> getNewsSentiment(@RequestHeader("accessToken") String token){
+        User user = userService.getUser(token);
+        GetNewsSentimentResDto newsSentimentResDto = newsService.getNewsSentiment(user.getWishDistrictId());
+        return ResponseEntity.ok(ApiUtils.success(newsSentimentResDto));
     }
 
 }

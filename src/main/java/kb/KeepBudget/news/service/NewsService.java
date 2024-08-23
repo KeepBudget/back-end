@@ -2,6 +2,7 @@ package kb.KeepBudget.news.service;
 
 import kb.KeepBudget.news.dto.req.GetNewsReqDto;
 import kb.KeepBudget.news.dto.res.GetNewsResDto;
+import kb.KeepBudget.news.dto.res.GetNewsSentimentResDto;
 import kb.KeepBudget.news.entity.News;
 import kb.KeepBudget.news.entity.NewsDistrict;
 import kb.KeepBudget.news.entity.NewsSentiment;
@@ -72,4 +73,17 @@ public class NewsService {
         };
     }
 
+    public GetNewsSentimentResDto getNewsSentiment(Integer districtId) {
+        List<NewsDistrict> newsDistricts = newsDistrictRepository.findAllByDistrictIdAndCategory(districtId, Category.PROPERTY);
+        List<Long> newsIds = newsDistricts.stream().map(NewsDistrict::getNewsId).toList();
+        List<NewsSentiment> newsSentiments = newsSentimentRepository.findAllByNewsIdIn(newsIds);
+        Double negative = newsSentiments.stream().mapToDouble(NewsSentiment::getNegative).average().orElse(0.0);
+        Double neutral = newsSentiments.stream().mapToDouble(NewsSentiment::getNeutral).average().orElse(0.0);
+        Double positive = newsSentiments.stream().mapToDouble(NewsSentiment::getPositive).average().orElse(0.0);
+        return GetNewsSentimentResDto.builder()
+                .negative(negative)
+                .neutral(neutral)
+                .positive(positive)
+                .build();
+    }
 }
