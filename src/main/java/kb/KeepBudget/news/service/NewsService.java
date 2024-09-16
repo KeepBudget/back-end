@@ -104,7 +104,8 @@ public class NewsService {
                 ));
         return keywordCountMap.entrySet().stream()
                 .map(entry -> new NewsKeywordResDto(entry.getKey(), entry.getValue()))
-                .sorted((dto1, dto2) -> dto2.getCount().compareTo(dto1.getCount()))
+                .sorted((dto1, dto2) -> dto2.getValue().compareTo(dto1.getValue()))
+                .limit(40)
                 .toList();
     }
 }

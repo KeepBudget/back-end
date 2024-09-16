@@ -11,7 +11,7 @@ import lombok.ToString;
 @Builder
 public class NewsKeywordResDto {
 
-    private String keyword;
-    private Integer count;
+    private String name;
+    private Integer value;
 
 }
