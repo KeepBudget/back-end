@@ -46,6 +46,12 @@ public class UserController {
         return ResponseEntity.ok(ApiUtils.success(user.toUserResDto(district)));
     }
 
+    @GetMapping("/raw")
+    public ResponseEntity<ApiResult<User>> getUserRaw(@RequestHeader("accessToken") String token){
+        User user = userService.getUser(token);
+        return ResponseEntity.ok(ApiUtils.success(user));
+    }
+
     @PutMapping("/wish-district")
     public ResponseEntity<ApiResult<UserResDto>> updateWishDistrict(
             @RequestHeader("accessToken") String token,
