@@ -52,7 +52,7 @@ public class UserController {
         return ResponseEntity.ok(ApiUtils.success(user));
     }
 
-    @PutMapping("/wish-district")
+    @PatchMapping("/wish-district")
     public ResponseEntity<ApiResult<UserResDto>> updateWishDistrict(
             @RequestHeader("accessToken") String token,
             @Valid @RequestBody WishDistrictReqDto reqDto
