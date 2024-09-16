@@ -49,7 +49,7 @@ public class UserService {
     }
 
     public String createToken(Long userId){
-        String userToken = jwtUtil.createJwt(userId, 1000 * 60 * 60L);
+        String userToken = jwtUtil.createJwt(userId, 1000 * 60 * 60 * 24L);
         return "Bearer " + userToken;
     }
 
