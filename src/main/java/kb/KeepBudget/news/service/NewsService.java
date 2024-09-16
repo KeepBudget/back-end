@@ -68,15 +68,23 @@ public class NewsService {
             return newsIds;
         }
         List<NewsSentiment> newsSentiments = newsSentimentRepository.findAllByNewsIdIn(newsIds);
+        System.out.println(newsSentiments.toString());
         return newsSentiments.stream().filter(newsSentiment -> matchesSentiment(newsSentiment, status))
                 .map(NewsSentiment::getNewsId).toList();
     }
 
     private boolean matchesSentiment(NewsSentiment newsSentiment, SentimentStatus status){
+
+        Double negative = newsSentiment.getNegative();
+        Double positive = newsSentiment.getPositive();
+        Double neutral = newsSentiment.getNeutral();
+
+        Double maxValue = Math.max(negative, Math.max(positive, neutral));
+
         return switch (status) {
-            case NEGATIVE -> newsSentiment.getNegative() > 0;
-            case NEUTRAL -> newsSentiment.getNeutral() > 0;
-            case POSITIVE -> newsSentiment.getPositive() > 0;
+            case NEGATIVE -> maxValue.equals(newsSentiment.getNegative());
+            case NEUTRAL -> maxValue.equals(newsSentiment.getNeutral());
+            case POSITIVE -> maxValue.equals(newsSentiment.getPositive());
         };
     }
 
